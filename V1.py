@@ -24,7 +24,7 @@ class Monstres:
 
         self.positionX+=self.vitesse
         self.canvas.coords(self.monst,self.positionX,self.positionY,self.positionX+25,self.positionY+25)
-        fenetre.after(100,self.deplacement)
+        fenetre.after(75,self.deplacement)
         
        
       
@@ -57,21 +57,6 @@ btnNew.grid(column=0, row=2, ipadx=5, pady=5,sticky="e")
 mont.deplacement()
 fenetre.mainloop()
 
-
-class Monstres:
-    def __init__(self,pcanvas):
-        self.vie=1
-        self.positionX=0
-        self.positionY=0
-        self.canvas=pcanvas
-        self.monst=self.canvas.create_rectangle(self.positionX,self.positionY,self.positionX+25,self.positionY+25, fill="blue")
-        self.vitesse=50
- 
-    def deplacement(self):
-        self.positionX+=self.vitesse
-        self.canvas.coords(self.monst,self.positionX,self.positionY,self.positionX+25,self.positionY+25)
-        
-        
 
 
 
