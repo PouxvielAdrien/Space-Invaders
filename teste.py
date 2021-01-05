@@ -48,3 +48,30 @@ class Monstres:
 jeux= Jeux()
 jeux.Jouer()
 
+
+
+
+
+def Laser():
+    global PosX,PosY
+    Long=20
+    Larg=5
+    x=PosX
+    y=PosY
+    Laser=Canevas.create_rectangle(x-Larg,y-Long,x+Larg,y+Larg,fill='red')
+    Tir()
+    
+def Tir():
+    global PosX,PosY,Laser,touche,Larg,Long
+    Long=20
+    Larg=5
+    Canevas.unbind('l')
+    x=PosX
+    y=PosY
+    dx=0
+    dy=-10
+    if y<0:
+        Canevas.bind('l',Clavier)
+        Canevas.delete(Laser)
+    else :
+        Canevas.move(Laser,dx,dy)
