@@ -11,7 +11,7 @@ class Monstres:
         self.tailleY=self.positionY+25
         self.canvas=pcanvas
         self.monst=self.canvas.create_rectangle(self.positionX,self.positionY,self.tailleX,self.tailleY, fill="blue")
-        self.vitesse=5
+        self.vitesse=1
  
     def deplacement(self): 
         # rebond droite
@@ -26,7 +26,14 @@ class Monstres:
 
         self.positionX+=self.vitesse
         self.canvas.coords(self.monst,self.positionX,self.positionY,self.positionX+25,self.positionY+25)
+        self.gagner()
         fenetre.after(75,self.deplacement)
+        
+    def gagner(self):
+        if self.positionY+self.tailleY>300:
+            self.vitesse=0
+            print('vous avez perdu')
+            
         
 class Joueur:
     def __init__(self,pcanvas):
@@ -38,7 +45,7 @@ class Joueur:
         self.canvas= pcanvas
         self.joueur=self.canvas.create_rectangle(self.positionX,self.positionY,self.tailleX,self.tailleY, fill="red")
         self.move=25
-        
+        self.shoot=True
         self.vitesse = 5
         self.canvas.bind('<Key>',self.deplacement)
         self.canvas.focus_set()
@@ -61,18 +68,20 @@ class Joueur:
                 self.positionX+=self.move
 
         #tir
-        if touche == 'space':
-            self.Laser()
-
+        if touche == 'space' :
+            Laserrr(self.positionX,self.positionY,self.canvas)
+            #self.Laser()
+            print("ok1")
         self.canvas.coords(self.joueur,self.positionX,self.positionY,self.positionX+25,self.positionY+25)
 
     def Laser(self):
+        self.shoot=False
         Long=20
         Larg=5
         xlaser=self.positionX
         ylaser=self.positionY
 
-        self.laser=canvas.create_rectangle(xlaser+Larg+9.5,ylaser-Long,xlaser+9.5,ylaser,fill='green')
+        self.laser=self.canvas.create_rectangle(xlaser+Larg+9.5,ylaser-Long,xlaser+9.5,ylaser,fill='green')
         self.Tir(xlaser,ylaser,Long,Larg)
         
     def Tir(self,xlaser,ylaser,Long,Larg):
@@ -84,11 +93,55 @@ class Joueur:
             
         else:
             self.canvas.delete(self.laser)
+            self.shoot=True
 
     def Collision(self):
-        x1monstre=self.canvas.coords(mont)
-        print(x1monstre)
+        x1l,y1l,x2l,y2l=self.canvas.coords(self.canvas.find_all()[-1])
+        toucher=self.canvas.find_overlapping(x1l,y1l,x2l,y2l)
+        for i in toucher[1:-1]:
+            mort=self.canvas.find_withtag(i)
+            self.canvas.delete(mort)
+            print("toucher: " ,mort)
+        
 
+        
+        
+class Laserrr:
+    def __init__(self,posX,posY, canevas):
+        self.Long=20
+        self.Larg=5
+        self.xlaser=posX
+        self.ylaser=posY
+        self.canevas=canevas
+        
+        self.laser=self.canevas.create_rectangle(self.xlaser+self.Larg+9.5,self.ylaser-self.Long,self.xlaser+9.5,self.ylaser,fill='green')
+        
+        self.Tir()
+        
+
+    def Tir(self):
+        
+        if self.ylaser>0 :
+            self.ylaser-=8
+            self.canevas.coords(self.laser,self.xlaser+self.Larg+9.5,self.ylaser-self.Long,self.xlaser+9.5,self.ylaser)
+            self.Collision()
+            fenetre.after(10,self.Tir())
+            
+        else:
+            self.canevas.delete(self.laser)
+            
+
+    def Collision(self):
+        x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
+        toucher=self.canevas.find_overlapping(x1l,y1l,x2l,y2l)
+        
+        for i in toucher[1:-1]:
+            mort=self.canevas.find_withtag(i)
+            self.canevas.delete(mort)
+            print("toucher: " ,mort)
+
+
+    
 
 
 
@@ -113,7 +166,7 @@ mont=Monstres(canvas)
 joueur=Joueur(canvas)
 
 canvas.grid(column=0, row=1, ipadx=5, pady=5)
-
+print(canvas.find_all())
 score=tkinter.Label(fenetre, text="score", bg="#d348d0")
 score.grid(column=0, row=0, ipadx=5, pady=5 , sticky="w" )
 
@@ -129,6 +182,7 @@ btnNew.grid(column=0, row=2, ipadx=5, pady=5,sticky="e")
 mont.deplacement()
 
 PosMonstre=[mont.positionX,mont.positionY,mont.tailleX,mont.tailleY]
+
 
 fenetre.mainloop()
 
