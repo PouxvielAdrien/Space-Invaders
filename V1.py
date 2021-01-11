@@ -1,7 +1,17 @@
 import tkinter
 import random
 
+class Partie:
+    def __init__(self, canvas):
+        self.joueur=Joueur
+        self.monstre=[]
+        self.canvas=canvas
+        
+    def lancement(self):
+        self.monstre=[Monstres(self.canvas),Monstres(self.canvas)]
+        
 
+        
 class Monstres:
     def __init__(self,pcanvas):
         self.vie=1
@@ -37,16 +47,20 @@ class Monstres:
         
 class Joueur:
     def __init__(self,pcanvas):
-        self.vie=1
+        self.vie=5
+        self.score=0
+        
         self.positionX=305
         self.positionY=390
         self.tailleX=self.positionX+25
         self.tailleY=self.positionY+25
         self.canvas= pcanvas
         self.joueur=self.canvas.create_rectangle(self.positionX,self.positionY,self.tailleX,self.tailleY, fill="red")
+        
         self.move=25
         self.shoot=True
         self.vitesse = 5
+
         self.canvas.bind('<Key>',self.deplacement)
         self.canvas.focus_set()
       
@@ -54,7 +68,7 @@ class Joueur:
         #Gestion de l'événement Appui sur une touche du clavier
     
         touche = event.keysym
-        print(touche)
+       
         
 
         #déplacement vers la gauche
@@ -68,11 +82,15 @@ class Joueur:
                 self.positionX+=self.move
 
         #tir
-        if touche == 'space' :
+        if touche == 'space' and self.shoot:
             Laserrr(self.positionX,self.positionY,self.canvas)
+            
             #self.Laser()
-            print("ok1")
+            
+
         self.canvas.coords(self.joueur,self.positionX,self.positionY,self.positionX+25,self.positionY+25)
+        var_vie.set("vie:"+str(self.vie))
+        fenetre.update()
 
     def Laser(self):
         self.shoot=False
@@ -81,7 +99,7 @@ class Joueur:
         xlaser=self.positionX
         ylaser=self.positionY
 
-        self.laser=self.canvas.create_rectangle(xlaser+Larg+9.5,ylaser-Long,xlaser+9.5,ylaser,fill='green')
+        self.laser=self.canvas.create_rectangle(xlaser+Larg+9.5,ylaser-Long,xlaser+9.5,ylaser, fill='green')
         self.Tir(xlaser,ylaser,Long,Larg)
         
     def Tir(self,xlaser,ylaser,Long,Larg):
@@ -101,6 +119,8 @@ class Joueur:
         for i in toucher[1:-1]:
             mort=self.canvas.find_withtag(i)
             self.canvas.delete(mort)
+            self.score+=50
+            var_score.set("score:" +str(self.score))
             print("toucher: " ,mort)
         
 
@@ -113,10 +133,9 @@ class Laserrr:
         self.xlaser=posX
         self.ylaser=posY
         self.canevas=canevas
+        self.laser=self.canevas.create_rectangle(self.xlaser+self.Larg+9.5,self.ylaser-self.Long,self.xlaser+9.5,self.ylaser, fill='orange')
         
-        self.laser=self.canevas.create_rectangle(self.xlaser+self.Larg+9.5,self.ylaser-self.Long,self.xlaser+9.5,self.ylaser,fill='green')
-        
-        self.Tir()
+        #self.Tir()
         
 
     def Tir(self):
@@ -166,11 +185,15 @@ mont=Monstres(canvas)
 joueur=Joueur(canvas)
 
 canvas.grid(column=0, row=1, ipadx=5, pady=5)
-print(canvas.find_all())
-score=tkinter.Label(fenetre, text="score", bg="#d348d0")
+
+var_score=tkinter.StringVar()
+var_score.set("score: "+ str(joueur.score))
+score=tkinter.Label(fenetre, textvariable=var_score, bg="#d348d0")
 score.grid(column=0, row=0, ipadx=5, pady=5 , sticky="w" )
 
-vie=tkinter.Label(fenetre, text="vie", bg="#d348d0")
+var_vie=tkinter.StringVar()
+var_vie.set("vie"+str(joueur.vie))
+vie=tkinter.Label(fenetre, textvariable=var_vie, bg="#d348d0")
 vie.grid(column=0, row=0, ipadx=5, pady=5 ,sticky="e")
 
 
@@ -181,7 +204,6 @@ btnNew=tkinter.Button(fenetre,text="nouveau")
 btnNew.grid(column=0, row=2, ipadx=5, pady=5,sticky="e")
 mont.deplacement()
 
-PosMonstre=[mont.positionX,mont.positionY,mont.tailleX,mont.tailleY]
 
 
 fenetre.mainloop()
