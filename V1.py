@@ -3,25 +3,31 @@ import random
 
 class Partie:
     def __init__(self, canvas):
-        self.joueur=Joueur
-        self.monstre=[]
         self.canvas=canvas
+        self.joueur=Joueur(self.canvas)
+        self.monstre=[Monstres(self.canvas,0,0),Monstres(self.canvas,100,0)]
+        var_vie.set("vie"+str(self.joueur.vie))
+        var_score.set("score: "+ str(self.joueur.score))
+        self.TirMonstre()
         
-    def lancement(self):
-        self.monstre=[Monstres(self.canvas),Monstres(self.canvas)]
-        
+
+    def TirMonstre(self):
+        choix=random.choice(self.monstre)
+        choix.Laser()
+        fenetre.after(6000, self.TirMonstre)          
 
         
 class Monstres:
-    def __init__(self,pcanvas):
+    def __init__(self,pcanvas,px,py):
         self.vie=1
-        self.positionX=0
-        self.positionY=0
+        self.positionX=px
+        self.positionY=py
         self.tailleX=self.positionX+25
         self.tailleY=self.positionY+25
         self.canvas=pcanvas
         self.monst=self.canvas.create_rectangle(self.positionX,self.positionY,self.tailleX,self.tailleY, fill="blue")
-        self.vitesse=1
+        self.vitesse=5
+        self.deplacement()
  
     def deplacement(self): 
         # rebond droite
@@ -43,6 +49,36 @@ class Monstres:
         if self.positionY+self.tailleY>300:
             self.vitesse=0
             print('vous avez perdu')
+
+    def Laser(self):
+        self.shoot=False
+        Long=20
+        Larg=5
+        xlaser=self.positionX
+        ylaser=self.positionY
+
+        self.laser=self.canvas.create_rectangle(xlaser+Larg+9.5,ylaser-Long,xlaser+9.5,ylaser, fill='yellow')
+        self.Tir(xlaser,ylaser,Long,Larg)
+        
+    def Tir(self,xlaser,ylaser,Long,Larg):
+        if ylaser<610 :
+            ylaser+=8
+            self.canvas.coords(self.laser,xlaser+Larg+9.5,ylaser-Long,xlaser+9.5,ylaser)
+            self.Collision()
+            fenetre.after(10,lambda : self.Tir(xlaser,ylaser,Long,Larg))
+            
+        else:
+            self.canvas.delete(self.laser)
+            self.shoot=True
+
+    def Collision(self):
+        x1l,y1l,x2l,y2l=self.canvas.coords(self.canvas.find_all()[-1])
+        toucher=self.canvas.find_overlapping(x1l,y1l,x2l,y2l)
+        for i in toucher[1:-1]:
+            mort=self.canvas.find_withtag(i)
+            self.canvas.delete(mort)
+
+
             
         
 class Joueur:
@@ -83,9 +119,9 @@ class Joueur:
 
         #tir
         if touche == 'space' and self.shoot:
-            Laserrr(self.positionX,self.positionY,self.canvas)
+            #Laserrr(self.positionX,self.positionY,self.canvas)
             
-            #self.Laser()
+            self.Laser()
             
 
         self.canvas.coords(self.joueur,self.positionX,self.positionY,self.positionX+25,self.positionY+25)
@@ -181,18 +217,17 @@ largeur=417
 canvas=tkinter.Canvas(fenetre, width = longeur,height = largeur,bg = "#47484b")
 images=tkinter.PhotoImage(file = "fond.gif" )
 fond=canvas.create_image(0,0,anchor = 'nw' , image=images)
-mont=Monstres(canvas)
-joueur=Joueur(canvas)
+
 
 canvas.grid(column=0, row=1, ipadx=5, pady=5)
 
 var_score=tkinter.StringVar()
-var_score.set("score: "+ str(joueur.score))
+
 score=tkinter.Label(fenetre, textvariable=var_score, bg="#d348d0")
 score.grid(column=0, row=0, ipadx=5, pady=5 , sticky="w" )
 
 var_vie=tkinter.StringVar()
-var_vie.set("vie"+str(joueur.vie))
+
 vie=tkinter.Label(fenetre, textvariable=var_vie, bg="#d348d0")
 vie.grid(column=0, row=0, ipadx=5, pady=5 ,sticky="e")
 
@@ -202,8 +237,8 @@ btnQuit.grid(column=0, row=2, ipadx=5, pady=5, sticky="w")
 
 btnNew=tkinter.Button(fenetre,text="nouveau")
 btnNew.grid(column=0, row=2, ipadx=5, pady=5,sticky="e")
-mont.deplacement()
 
+new=Partie(canvas)
 
 
 fenetre.mainloop()
