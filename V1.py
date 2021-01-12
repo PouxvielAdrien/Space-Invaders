@@ -14,15 +14,23 @@ import random
 class Partie:
     def __init__(self, canvas):
         self.canvas=canvas
-        self.joueur=Joueur(self.canvas)
-        self.mur1=Protection(self.canvas,50)
-        self.mur2=Protection(self.canvas,280)
-        self.mur3=Protection(self.canvas,500)
-        self.monstre=[Monstres(self.canvas,10,0),Monstres(self.canvas,50,0)]
-        var_vie.set("vie"+str(self.joueur.vie))
-        var_score.set("score: "+ str(self.joueur.score))
-        self.TirMonstre()
-        self.deplacementMonstre()
+        self.restart()
+
+    def restart(self):
+            print('partie recommencee')
+            
+            self.canvas.delete("all")
+            self.joueur=Joueur(self.canvas)
+
+            self.mur1=Protection(self.canvas,50)
+            self.mur2=Protection(self.canvas,280)
+            self.mur3=Protection(self.canvas,500)
+            self.monstre=[Monstres(self.canvas,10,0),Monstres(self.canvas,50,0)]
+            var_vie.set("vie"+str(self.joueur.vie))
+            var_score.set("score: "+ str(self.joueur.score))
+            self.TirMonstre()
+            self.deplacementMonstre()
+            
 
     def TirMonstre(self):
         #choix=random.choice(self.monstre)
@@ -82,15 +90,9 @@ class Partie:
         if len(self.monstre)==0:
             fin=tkinter.Label(fenetre, text="vous avez gagner", bg="#d348d0")
             fin.grid(column=0, row=1, ipadx=5, pady=5)
-"""
-    def restart(self):
-        del(self.joueur)
-        del(self.monstre)
-        del(self.mur1)
-        del(self.mur2)
-        del(self.mur3)
-        init(self.canvas)
-"""
+
+    
+
 class Monstres:
     def __init__(self,pcanvas,px,py):
         self.vie=1
@@ -100,9 +102,8 @@ class Monstres:
         self.tailleY=self.positionY+25
         self.canvas=pcanvas
         self.monst=self.canvas.create_rectangle(self.positionX,self.positionY,self.tailleX,self.tailleY, fill="blue")
-        self.vitesse=-5
-       
- 
+        self.vitesse=(5)
+
     def deplacement(self):
     
         self.positionX+=self.vitesse
@@ -193,30 +194,31 @@ class Laserrr:
             self.couler(plisteEnnemie)
             fenetre.after(10, lambda:self.TirEnnemis(plisteEnnemie))
         else:
-            print("sup2")
+            #print("sup2")
             self.canevas.delete(self.laser)
             
     def couler(self,listeEnnemie):
         x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
         toucher=self.canevas.find_overlapping(x1l,y1l,x2l,y2l)
-        print(toucher) 
+        #print(toucher) 
         for obj in toucher:
             if obj in listeEnnemie:
                 mort=self.canevas.find_withtag(obj)
                 self.canevas.delete(mort)
                 self.canevas.delete(self.laser)
-                print("toucher: " ,mort)
+                #print("toucher: " ,mort)
 
     def Collision(self):
         x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
         toucher=self.canevas.find_overlapping(x1l,y1l,x2l,y2l)
-        print(toucher)
+        #print(toucher)
         for i in toucher[1:-1]:
             mort=self.canevas.find_withtag(i)
             self.canevas.delete(self.laser)
             self.canevas.delete(mort)
-            print("toucher: " ,mort)
+            #print("toucher: " ,mort)
             
+
 
 
     
@@ -255,9 +257,9 @@ btnQuit=tkinter.Button(fenetre,text="quitter",command=fenetre.destroy)
 btnQuit.grid(column=0, row=2, ipadx=5, pady=5, sticky="w")
 
 
-new=Partie(canvas)
+partie=Partie(canvas)
 
-btnNew=tkinter.Button(fenetre,text="nouveau", command=fenetre.)
+btnNew=tkinter.Button(fenetre,text="nouveau", command= partie.restart)
 btnNew.grid(column=0, row=2, ipadx=5, pady=5,sticky="e")
 
 
