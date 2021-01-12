@@ -15,6 +15,9 @@ class Partie:
     def __init__(self, canvas):
         self.canvas=canvas
         self.joueur=Joueur(self.canvas)
+        self.mur1=Protection(self.canvas,50)
+        self.mur2=Protection(self.canvas,280)
+        self.mur3=Protection(self.canvas,500)
         self.monstre=[Monstres(self.canvas,10,0),Monstres(self.canvas,50,0)]
         var_vie.set("vie"+str(self.joueur.vie))
         var_score.set("score: "+ str(self.joueur.score))
@@ -25,10 +28,22 @@ class Partie:
         #choix=random.choice(self.monstre)
         choix=self.monstre[0]
         laz=Laserrr(choix.positionX,choix.positionY,self.canvas,"orange",10)
-        laz.TirEnnemis()
+        laz.TirEnnemis([2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
         self.perdu()
-        fenetre.after(6000, self.TirMonstre)    
-    
+        fenetre.after(1000, self.TirMonstre)    
+    """
+    def teste(self):
+
+        listeTouche=[]
+        for touche in listeTouche:
+            if touche in dicoAmis:
+                self.joueur.vie-=1
+                self.perdu()
+            elif touche in dicoEnnemis:
+                del(self.dicoEnnemis[touche])
+                self.canvas.delete(touche)
+                gagner()
+                """
     def deplacementMonstre(self):
         
         #rebond droite
@@ -37,8 +52,7 @@ class Partie:
             for monster in self.monstre:
                 monster.vitesse=-monster.vitesse
                 monster.positionY+=10
-                monster.deplacement()
-                
+                monster.deplacement()   
             self.perdu()
 
         # rebond gauche
@@ -68,8 +82,15 @@ class Partie:
         if len(self.monstre)==0:
             fin=tkinter.Label(fenetre, text="vous avez gagner", bg="#d348d0")
             fin.grid(column=0, row=1, ipadx=5, pady=5)
-
-
+"""
+    def restart(self):
+        del(self.joueur)
+        del(self.monstre)
+        del(self.mur1)
+        del(self.mur2)
+        del(self.mur3)
+        init(self.canvas)
+"""
 class Monstres:
     def __init__(self,pcanvas,px,py):
         self.vie=1
@@ -83,63 +104,19 @@ class Monstres:
        
  
     def deplacement(self):
-        """ 
-        # rebond droite
-        if self.positionX+25+self.vitesse >=self.canvas.winfo_width():
-            self.vitesse=-self.vitesse
-            self.positionY+=10
-            
-        # rebond gauche
-        if self.positionX+self.vitesse <= 0:
-           self.vitesse=-self.vitesse
-           self.positionY+=10
-        """
+    
         self.positionX+=self.vitesse
         self.canvas.coords(self.monst,self.positionX,self.positionY,self.positionX+25,self.positionY+25)
         
-        #fenetre.after(75,self.deplacement)
-        
-    def perdu(self):
-        if self.positionY+self.tailleY>300:
-            self.vitesse=0
-            self.canvas.delete(2)
-            fin=tkinter.Label(fenetre, text="vous avez perdu", bg="#d348d0")
-            fin.grid(column=0, row=1, ipadx=5, pady=5)
 
-    def Laser(self):
-       
-        Long=20
-        Larg=5
-        xlaser=self.positionX
-        ylaser=self.positionY
-
-        self.laser=self.canvas.create_rectangle(xlaser+Larg+9.5,ylaser-Long,xlaser+9.5,ylaser, fill='yellow')
-        self.Tir(xlaser,ylaser,Long,Larg)
-        
-    def Tir(self,xlaser,ylaser,Long,Larg):
-        if ylaser<610 :
-            ylaser+=8
-            self.canvas.coords(self.laser,xlaser+Larg+9.5,ylaser-Long,xlaser+9.5,ylaser)
-            self.Collision()
-            fenetre.after(10,lambda : self.Tir(xlaser,ylaser,Long,Larg))
-            
-        else:
-            self.canvas.delete(self.laser)
-            self.shoot=True
-
-    def Collision(self):
-        x1l,y1l,x2l,y2l=self.canvas.coords(self.canvas.find_all()[-1])
-        toucher=self.canvas.find_overlapping(x1l,y1l,x2l,y2l)
-        for i in toucher[1:-1]:
-            mort=self.canvas.find_withtag(i)
-            self.canvas.delete(mort)
-
-
-            
+class Protection:
+     def __init__(self,canvas,px):
+         self.canvas=canvas
+         self.mur=[self.canvas.create_rectangle(px,300,px+20,320,fill="white"),self.canvas.create_rectangle(px+25,300,px+45,320,fill="white"),self.canvas.create_rectangle(px+50,300,px+70,320,fill="white"),self.canvas.create_rectangle(px,320,px+20,340,fill="white"),self.canvas.create_rectangle(px+25,320,px+45,340,fill="white"),self.canvas.create_rectangle(px+50,320,px+70,340,fill="white")]           
         
 class Joueur:
     def __init__(self,pcanvas):
-        self.vie=5
+        self.vie=3
         self.score=0
         
         self.positionX=305
@@ -161,8 +138,6 @@ class Joueur:
     
         touche = event.keysym
        
-        
-
         #déplacement vers la gauche
         if touche == 'Left' :
             if self.positionX - self.move > 0:
@@ -178,45 +153,11 @@ class Joueur:
             laz=Laserrr(self.positionX,self.positionY,self.canvas,"green",-10)
             laz.TirAllier()
             
-            #self.Laser()
-            
-
         self.canvas.coords(self.joueur,self.positionX,self.positionY,self.positionX+25,self.positionY+25)
         var_vie.set("vie:"+str(self.vie))
         fenetre.update()
 
-    def Laser(self):
-        self.shoot=False
-        Long=20
-        Larg=5
-        xlaser=self.positionX
-        ylaser=self.positionY
-
-        self.laser=self.canvas.create_rectangle(xlaser+Larg+9.5,ylaser-Long,xlaser+9.5,ylaser, fill='green')
-        self.Tir(xlaser,ylaser,Long,Larg)
-        
-    def Tir(self,xlaser,ylaser,Long,Larg):
-        if ylaser>0 :
-            ylaser-=8
-            self.canvas.coords(self.laser, xlaser+Larg+9.5, ylaser-Long, xlaser+9.5, ylaser)
-            self.Collision()
-            fenetre.after(10,lambda : self.Tir(xlaser,ylaser,Long,Larg))
-            
-        else:
-            self.canvas.delete(self.laser)
-            self.shoot=True
-
-    def Collision(self):
-        x1l,y1l,x2l,y2l=self.canvas.coords(self.canvas.find_all()[-1])
-        toucher=self.canvas.find_overlapping(x1l,y1l,x2l,y2l)
-        for i in toucher[1:-1]:
-            mort=self.canvas.find_withtag(i)
-            self.canvas.delete(mort)
-
-            self.canvas.delete(self.canvas.find_all()[-1])
-            self.score+=50
-            var_score.set("score:" +str(self.score))
-            print("toucher: " ,mort)
+    
         
 
         
@@ -232,9 +173,6 @@ class Laserrr:
         self.vitesse=vitesse
         self.laser=self.canevas.create_rectangle(self.xlaser+self.Larg+9.5, self.ylaser-self.Long, self.xlaser+9.5, self.ylaser, fill=self.couleur)
         
-        
-        
-    
 
     def TirAllier(self):
         if self.ylaser>0:
@@ -248,24 +186,26 @@ class Laserrr:
             
         
             
-    def TirEnnemis(self):
+    def TirEnnemis(self,plisteEnnemie):
         if self.ylaser<500:
             self.ylaser+=self.vitesse
             self.canevas.coords(self.laser, self.xlaser+self.Larg+9.5, self.ylaser-self.Long, self.xlaser+9.5,self.ylaser )
-            self.couler()
-            fenetre.after(10, self.TirEnnemis)
+            self.couler(plisteEnnemie)
+            fenetre.after(10, lambda:self.TirEnnemis(plisteEnnemie))
         else:
             print("sup2")
             self.canevas.delete(self.laser)
             
-    def couler(self):
+    def couler(self,listeEnnemie):
         x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
         toucher=self.canevas.find_overlapping(x1l,y1l,x2l,y2l)
-
-        if toucher[1]==2:
-            mort=self.canevas.find_withtag(2)
-            self.canevas.delete(mort)
-            print("toucher: " ,mort)
+        print(toucher) 
+        for obj in toucher:
+            if obj in listeEnnemie:
+                mort=self.canevas.find_withtag(obj)
+                self.canevas.delete(mort)
+                self.canevas.delete(self.laser)
+                print("toucher: " ,mort)
 
     def Collision(self):
         x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
@@ -273,15 +213,13 @@ class Laserrr:
         print(toucher)
         for i in toucher[1:-1]:
             mort=self.canevas.find_withtag(i)
+            self.canevas.delete(self.laser)
             self.canevas.delete(mort)
             print("toucher: " ,mort)
+            
 
 
     
-
-
-
-        
 
 
 
@@ -316,10 +254,11 @@ vie.grid(column=0, row=0, ipadx=5, pady=5 ,sticky="e")
 btnQuit=tkinter.Button(fenetre,text="quitter",command=fenetre.destroy)
 btnQuit.grid(column=0, row=2, ipadx=5, pady=5, sticky="w")
 
-btnNew=tkinter.Button(fenetre,text="nouveau")
-btnNew.grid(column=0, row=2, ipadx=5, pady=5,sticky="e")
 
 new=Partie(canvas)
+
+btnNew=tkinter.Button(fenetre,text="nouveau", command=fenetre.)
+btnNew.grid(column=0, row=2, ipadx=5, pady=5,sticky="e")
 
 
 fenetre.mainloop()
