@@ -19,10 +19,12 @@ class Partie:
         self.mur2=Protection(self.canvas,280)
         self.mur3=Protection(self.canvas,500)
         self.monstre=[Monstres(self.canvas,10,0),Monstres(self.canvas,50,0)]
+        self.listeAmis{2:self.joueur; [3,4,5,6,7,8,9];self.mur1; }
         var_vie.set("vie"+str(self.joueur.vie))
         var_score.set("score: "+ str(self.joueur.score))
         self.TirMonstre()
         self.deplacementMonstre()
+    
 
     def TirMonstre(self):
         #choix=random.choice(self.monstre)
@@ -181,7 +183,7 @@ class Laserrr:
             self.Collision()
             fenetre.after(10, self.TirAllier)
         else:
-            print("sup")
+           
             self.canevas.delete(self.laser)
             
         
@@ -193,19 +195,19 @@ class Laserrr:
             self.couler(plisteEnnemie)
             fenetre.after(10, lambda:self.TirEnnemis(plisteEnnemie))
         else:
-            print("sup2")
+            
             self.canevas.delete(self.laser)
             
     def couler(self,listeEnnemie):
         x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
         toucher=self.canevas.find_overlapping(x1l,y1l,x2l,y2l)
-        print(toucher) 
+        
         for obj in toucher:
             if obj in listeEnnemie:
                 mort=self.canevas.find_withtag(obj)
                 self.canevas.delete(mort)
                 self.canevas.delete(self.laser)
-                print("toucher: " ,mort)
+               
 
     def Collision(self):
         x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
@@ -215,12 +217,11 @@ class Laserrr:
             mort=self.canevas.find_withtag(i)
             self.canevas.delete(self.laser)
             self.canevas.delete(mort)
-            print("toucher: " ,mort)
+            
             
 
 
     
-
 
 
 
@@ -255,13 +256,15 @@ btnQuit=tkinter.Button(fenetre,text="quitter",command=fenetre.destroy)
 btnQuit.grid(column=0, row=2, ipadx=5, pady=5, sticky="w")
 
 
-new=Partie(canvas)
+partie=Partie(canvas)
 
-btnNew=tkinter.Button(fenetre,text="nouveau", command=fenetre.)
+
+btnNew=tkinter.Button(fenetre,text="nouveau", command=fenetre.destroy)
 btnNew.grid(column=0, row=2, ipadx=5, pady=5,sticky="e")
 
 
 fenetre.mainloop()
+
 
 
 
