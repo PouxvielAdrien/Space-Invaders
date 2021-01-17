@@ -14,19 +14,6 @@ import random
 class Partie:
     def __init__(self, canvas):
         self.canvas=canvas
-<<<<<<< HEAD
-        self.joueur=Joueur(self.canvas)
-        self.mur1=Protection(self.canvas,50)
-        self.mur2=Protection(self.canvas,280)
-        self.mur3=Protection(self.canvas,500)
-        self.monstre=[Monstres(self.canvas,10,0),Monstres(self.canvas,50,0)]
-        self.listeAmis{2:self.joueur; [3,4,5,6,7,8,9];self.mur1; }
-        var_vie.set("vie"+str(self.joueur.vie))
-        var_score.set("score: "+ str(self.joueur.score))
-        self.TirMonstre()
-        self.deplacementMonstre()
-    
-=======
         self.restart()
 
     def restart(self):
@@ -44,7 +31,6 @@ class Partie:
             self.TirMonstre()
             self.deplacementMonstre()
             
->>>>>>> d9b99acaa01ba352d2957831c3c6db789528a323
 
     def TirMonstre(self):
         #choix=random.choice(self.monstre)
@@ -208,31 +194,19 @@ class Laserrr:
             self.couler(plisteEnnemie)
             fenetre.after(10, lambda:self.TirEnnemis(plisteEnnemie))
         else:
-<<<<<<< HEAD
-            
-=======
             #print("sup2")
->>>>>>> d9b99acaa01ba352d2957831c3c6db789528a323
             self.canevas.delete(self.laser)
             
     def couler(self,listeEnnemie):
         x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
         toucher=self.canevas.find_overlapping(x1l,y1l,x2l,y2l)
-<<<<<<< HEAD
-        
-=======
         #print(toucher) 
->>>>>>> d9b99acaa01ba352d2957831c3c6db789528a323
         for obj in toucher:
             if obj in listeEnnemie:
                 mort=self.canevas.find_withtag(obj)
                 self.canevas.delete(mort)
                 self.canevas.delete(self.laser)
-<<<<<<< HEAD
-               
-=======
                 #print("toucher: " ,mort)
->>>>>>> d9b99acaa01ba352d2957831c3c6db789528a323
 
     def Collision(self):
         x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
@@ -242,11 +216,7 @@ class Laserrr:
             mort=self.canevas.find_withtag(i)
             self.canevas.delete(self.laser)
             self.canevas.delete(mort)
-<<<<<<< HEAD
-            
-=======
             #print("toucher: " ,mort)
->>>>>>> d9b99acaa01ba352d2957831c3c6db789528a323
             
 
 
@@ -287,14 +257,8 @@ btnQuit.grid(column=0, row=2, ipadx=5, pady=5, sticky="w")
 
 
 partie=Partie(canvas)
-<<<<<<< HEAD
-
-
-btnNew=tkinter.Button(fenetre,text="nouveau", command=fenetre.destroy)
-=======
 
 btnNew=tkinter.Button(fenetre,text="nouveau", command= partie.restart)
->>>>>>> d9b99acaa01ba352d2957831c3c6db789528a323
 btnNew.grid(column=0, row=2, ipadx=5, pady=5,sticky="e")
 
 
