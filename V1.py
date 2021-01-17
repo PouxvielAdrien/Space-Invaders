@@ -28,28 +28,27 @@ class Partie:
         self.restart()
 
     def restart(self):
-            print('partie recommencee')
-            
-            self.canvas.delete("all")
-            self.joueur=Joueur(self.canvas)
-
-            self.mur1=Protection(self.canvas,50)
-            self.mur2=Protection(self.canvas,280)
-            self.mur3=Protection(self.canvas,500)
-            self.monstre=[Monstres(self.canvas,10,0),Monstres(self.canvas,50,0)]
-            self.dicoAmis={2:self.joueur, 3:self.mur1,4:self.mur1,5:self.mur1,6:self.mur1,7:self.mur1,8:self.mur1,9:self.mur2,10:self.mur2,11:self.mur2,12:self.mur2,13:self.mur2,14:self.mur3,15:self.mur3,16:self.mur3,17:self.mur3,18:self.mur3,19:self.mur3,20:self.mur3}
-            self.dicoEnnemis={21:self.monstre[0],22:self.monstre[1]}
-            var_vie.set("vie"+str(self.joueur.vie))
-            var_score.set("score: "+ str(self.joueur.score))
-            self.TirMonstre()
-            self.deplacementMonstre()
+        print('partie recommencee')
+        
+        self.canvas.delete("all")
+        self.joueur=Joueur(self.canvas)
+        self.mur1=Protection(self.canvas,50)
+        self.mur2=Protection(self.canvas,280)
+        self.mur3=Protection(self.canvas,500)
+        self.monstre=[Monstres(self.canvas,10,0),Monstres(self.canvas,50,0)]
+        self.dicoAmis={2:self.joueur, 3:self.mur1,4:self.mur1,5:self.mur1,6:self.mur1,7:self.mur1,8:self.mur1,9:self.mur2,10:self.mur2,11:self.mur2,12:self.mur2,13:self.mur2,14:self.mur3,15:self.mur3,16:self.mur3,17:self.mur3,18:self.mur3,19:self.mur3,20:self.mur3}
+        self.dicoEnnemis={21:self.monstre[0],22:self.monstre[1]}
+        var_vie.set("vie"+str(self.joueur.vie))
+        var_score.set("score: "+ str(self.joueur.score))
+        self.TirMonstre()
+        self.deplacementMonstre()
             
     def main(self,laz):
         if laz!= None:
             laz.TirEnnemis()
             toucher=laz.couler()
             self.teste(toucher,laz)
-        fenetre.after(10,lambda:self.main(laz))
+        fenetre.after(20,lambda:self.main(laz))
     
     def TirMonstre(self):
         #choix=random.choice(self.monstre)
@@ -58,15 +57,20 @@ class Partie:
         self.main(laz)
         #laz.TirEnnemis([2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
         #self.perdu()
-        fenetre.after(1000, self.TirMonstre)    
+        fenetre.after(10000, self.TirMonstre)    
     
     def teste(self,listeTouche,laser ):
 
         for touche in listeTouche:
             if touche in self.dicoAmis:
                 if touche ==2:
+                    print(self.joueur.vie)
                     self.joueur.vie-=1
+                    print(self.joueur.vie)
                     self.canvas.delete(laser)
+                    print(laser)
+                    del(laser)
+                    
                     self.perdu()
                 else:
                     del(self.dicoAmis[touche])
@@ -81,6 +85,7 @@ class Partie:
                 self.canvas.delete(touche)
                 self.canvas.delete(laser)
                 self.gagner()
+
     def deplacementMonstre(self):
         
         #rebond droite
@@ -131,7 +136,7 @@ class Monstres:
         self.tailleY=self.positionY+25
         self.canvas=pcanvas
         self.monst=self.canvas.create_rectangle(self.positionX,self.positionY,self.tailleX,self.tailleY, fill="blue")
-        self.vitesse=(5)
+        self.vitesse=0
 
     def deplacement(self):
     
@@ -149,7 +154,7 @@ class Joueur:
         self.vie=3
         self.score=0
         
-        self.positionX=305
+        self.positionX=0
         self.positionY=390
         self.tailleX=self.positionX+25
         self.tailleY=self.positionY+25
@@ -162,7 +167,8 @@ class Joueur:
 
         self.canvas.bind('<Key>',self.deplacement)
         self.canvas.focus_set()
-      
+    def __del__(self):
+        print("je suis lser mort")
     def deplacement (self,event):
         #Gestion de l'événement Appui sur une touche du clavier
     
