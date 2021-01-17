@@ -1,5 +1,16 @@
+#Header
 """
-a faire laser allier ennemis, fin de partie gagner et perdu, score , protection
+Cette page contient les fonctions nécessaires pour jouer 
+Auteurs : Adrien Pouxviel, Farès Zaghouane
+Il a été réalisé le 17/01/2021
+To Do : 
+
+Lien du git : 
+"""
+
+
+"""
+a faire  fin de partie gagner et perdu, score , bouton nouveau
 idee pour laser et collision on garde dans une liste les valeurs de ennemie en fonctions de qui tire et on verrifie
 juste si c'est un ennemi
 ex collision(listeEnnemie)
@@ -26,32 +37,50 @@ class Partie:
             self.mur2=Protection(self.canvas,280)
             self.mur3=Protection(self.canvas,500)
             self.monstre=[Monstres(self.canvas,10,0),Monstres(self.canvas,50,0)]
+            self.dicoAmis={2:self.joueur, 3:self.mur1,4:self.mur1,5:self.mur1,6:self.mur1,7:self.mur1,8:self.mur1,9:self.mur2,10:self.mur2,11:self.mur2,12:self.mur2,13:self.mur2,14:self.mur3,15:self.mur3,16:self.mur3,17:self.mur3,18:self.mur3,19:self.mur3,20:self.mur3}
+            self.dicoEnnemis={21:self.monstre[0],22:self.monstre[1]}
             var_vie.set("vie"+str(self.joueur.vie))
             var_score.set("score: "+ str(self.joueur.score))
             self.TirMonstre()
             self.deplacementMonstre()
             
-
+    def main(self,laz):
+        if laz!= None:
+            laz.TirEnnemis()
+            toucher=laz.couler()
+            self.teste(toucher,laz)
+        fenetre.after(10,lambda:self.main(laz))
+    
     def TirMonstre(self):
         #choix=random.choice(self.monstre)
         choix=self.monstre[0]
         laz=Laserrr(choix.positionX,choix.positionY,self.canvas,"orange",10)
-        laz.TirEnnemis([2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
-        self.perdu()
+        self.main(laz)
+        #laz.TirEnnemis([2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
+        #self.perdu()
         fenetre.after(1000, self.TirMonstre)    
-    """
-    def teste(self):
+    
+    def teste(self,listeTouche,laser ):
 
-        listeTouche=[]
         for touche in listeTouche:
-            if touche in dicoAmis:
-                self.joueur.vie-=1
-                self.perdu()
-            elif touche in dicoEnnemis:
-                del(self.dicoEnnemis[touche])
+            if touche in self.dicoAmis:
+                if touche ==2:
+                    self.joueur.vie-=1
+                    self.canvas.delete(laser)
+                    self.perdu()
+                else:
+                    del(self.dicoAmis[touche])
+                    self.canvas.delete(touche)
+                    self.canvas.delete(laser)
+    
+    def testeAmis(self,listeTouche, laser):
+        for touche in listeTouche:
+            if touche in self.dicoEnnemis.keys():
+                mort=self.dicoEnnemis.pop(touche)
+                del(self.monstre[0])
                 self.canvas.delete(touche)
-                gagner()
-                """
+                self.canvas.delete(laser)
+                self.gagner()
     def deplacementMonstre(self):
         
         #rebond droite
@@ -187,19 +216,21 @@ class Laserrr:
             
         
             
-    def TirEnnemis(self,plisteEnnemie):
+    def TirEnnemis(self):
         if self.ylaser<500:
             self.ylaser+=self.vitesse
             self.canevas.coords(self.laser, self.xlaser+self.Larg+9.5, self.ylaser-self.Long, self.xlaser+9.5,self.ylaser )
-            self.couler(plisteEnnemie)
-            fenetre.after(10, lambda:self.TirEnnemis(plisteEnnemie))
+            #self.couler(plisteEnnemie)
+            #fenetre.after(10, lambda:self.TirEnnemis(plisteEnnemie))
         else:
             #print("sup2")
             self.canevas.delete(self.laser)
             
-    def couler(self,listeEnnemie):
+    def couler(self):
         x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
         toucher=self.canevas.find_overlapping(x1l,y1l,x2l,y2l)
+        return toucher
+        """
         #print(toucher) 
         for obj in toucher:
             if obj in listeEnnemie:
@@ -207,7 +238,7 @@ class Laserrr:
                 self.canevas.delete(mort)
                 self.canevas.delete(self.laser)
                 #print("toucher: " ,mort)
-
+        """
     def Collision(self):
         x1l,y1l,x2l,y2l=self.canevas.coords(self.canevas.find_all()[-1])
         toucher=self.canevas.find_overlapping(x1l,y1l,x2l,y2l)
