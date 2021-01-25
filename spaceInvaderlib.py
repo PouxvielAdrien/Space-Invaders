@@ -57,7 +57,7 @@ class Partie:
 
 
     def miseAJour(self):
-        # cette fonction tourne en boucle et sert a mettre a jour l'affichage du score et de la vie 
+        # cette fonction tourne en boucle et sert a mettre a jour l'affichage du score et de la vie aisni que la liste des monstres sur presents 
         if self.continuer:
             for i, monstre in enumerate( self.monstre):
                 if monstre not in dicoEnnemis.values():
