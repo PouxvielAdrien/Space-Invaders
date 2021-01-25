@@ -94,6 +94,7 @@ class Partie:
         # on fais de meme avec le monstre le plus a gauche
         # sinon on les deplacent simplement sur le cote 
         # une fois qu'ils sont descendu on regarde si ils ont atteint la limite basse pour voir si on a perdu
+        # on utilise la liste monstre plutot que le dicotionnaire des monstres pour pouvoir utiliser l'indice car l'indice 0 est celui le plus a gauche et l'indice -1 le plus a droite 
 
         if self.continuer:
 
