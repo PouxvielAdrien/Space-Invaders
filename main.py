@@ -1,11 +1,13 @@
 """
 Cette page contient les fonctions nécessaires pour jouer 
 Auteurs : Adrien Pouxviel, Farès Zaghouane
-Il a été réalisé le 17/01/2021
-To Do : - probleme lors du tir joueur.
-        -ajouter plus d'aliens   
+Il a été réalisé le 17/01/2021 mise a jour le 24/01/21
+To Do : -ajouter plus d'aliens   
         -ajouter alien bonus    
         -mettre des images pour les aliens et le joueur
+        - petit proble lorque le joueur et le monstre tir en meme temps, le monstre se supprime tous seul
+        - ajouter des niveau
+        -enrgistrer le meilleur score
 
 Lien du git : https://github.com/PouxvielAdrien/Space-Invaders
 """
@@ -13,28 +15,32 @@ Lien du git : https://github.com/PouxvielAdrien/Space-Invaders
 import tkinter
 import spaceInvaderlib
 
+
+
 def jeu():
-    #fonction qui cree la partie 
+    #fonction qui cree la partie
+     
     fenetre=tkinter.Tk()
     fenetre.title("Space Invaders")
     fenetre.configure(bg="black")
 
     longeur=610
     largeur=417
+    var_score=tkinter.StringVar()
+    var_vie=tkinter.StringVar()
+    
 
     canvas=tkinter.Canvas(fenetre, width = longeur,height = largeur,bg = "#47484b")
     images=tkinter.PhotoImage(file = "fond.gif" )
-    fond=canvas.create_image(0,0,anchor = 'nw' , image=images)
-
-
+    canvas.create_image(0,0,anchor = 'nw' , image=images)
     canvas.grid(column=0, row=1, ipadx=5, pady=5)
 
-    var_score=tkinter.StringVar()
+    partie=spaceInvaderlib.Partie(canvas, fenetre,var_score,var_vie)
 
     score=tkinter.Label(fenetre, textvariable=var_score, bg="#d348d0")
     score.grid(column=0, row=0, ipadx=5, pady=5 , sticky="w" )
 
-    var_vie=tkinter.StringVar()
+    
 
     vie=tkinter.Label(fenetre, textvariable=var_vie, bg="#d348d0")
     vie.grid(column=0, row=0, ipadx=5, pady=5 ,sticky="e")
@@ -43,8 +49,9 @@ def jeu():
     btnQuit=tkinter.Button(fenetre,text="quitter",command=fenetre.destroy)
     btnQuit.grid(column=0, row=2, ipadx=5, pady=5, sticky="w")
 
-
-    partie=spaceInvaderlib.Partie(canvas, fenetre,var_score,var_vie)
+    btnPause=tkinter.Button(fenetre,text="Pause" ,command=partie.pause)
+    btnPause.grid(column=0, row=2, ipadx=5, pady=5, sticky="n")
+    
 
     btnNew=tkinter.Button(fenetre,text="nouveau", command= lambda: [fenetre.destroy(),jeu()])
     btnNew.grid(column=0, row=2, ipadx=5, pady=5,sticky="e")
