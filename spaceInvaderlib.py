@@ -15,6 +15,7 @@ Lien du git : https://github.com/PouxvielAdrien/Space-Invaders
 
 import tkinter
 import random
+import pygame
 
 class Partie:
     """
@@ -58,6 +59,10 @@ class Partie:
     def miseAJour(self):
         # cette fonction tourne en boucle et sert a mettre a jour l'affichage du score et de la vie 
         if self.continuer:
+            for i, monstre in enumerate( self.monstre):
+                if monstre not in dicoEnnemis.values():
+                    del(self.monstre[i])
+                    
             self.var_score.set("score: "+ str(self.joueur.score))
             self.var_vie.set("vie"+str(self.joueur.vie))
             self.fenetre.update()
@@ -86,7 +91,7 @@ class Partie:
         global dicoEnnemis
         if len (dicoEnnemis)!=0 and self.continuer:
             choix=random.choice(list(dicoEnnemis.values()))
-            Laserrr(self.fenetre,choix.positionX,choix.positionY,self.canvas,"orange",10,False)
+            choix.Tir()
         self.fenetre.after(5000, self.TirMonstre)    
 
     def deplacementMonstre(self):
@@ -163,17 +168,20 @@ class Monstres:
         
         # on ajoute le monstre dans le dictionnaire Ennemies avec son Id sur le canvas
         dicoEnnemis[self.canvas.find_all()[-1]]=self
-        self.dificulter()
+        self.difficulter()
 
     def deplacement(self):
         # fonction qui permet le deplacr le monstre
         self.positionX+=self.vitesse
         self.canvas.coords(self.monst,self.positionX,self.positionY,self.positionX+25,self.positionY+25)
         
-    def dificulter(self):
+    def difficulter(self):
         # petite fonction qui augmente la difficulter en augmentant la vitesse des monstres
         self.vitesse+=5
-        self.fenetre.after(10000,self.dificulter)
+        self.fenetre.after(10000,self.difficulter)
+
+    def Tir(self):
+        Laserrr(self.fenetre,self.positionX,self.positionY,self.canvas,"orange",10,False)
 
 
 class Protection:
@@ -258,6 +266,11 @@ class Laserrr:
         self.ami=ami   # depend de si c'est le joueur ou un mosntre qui tir pour la fonction couler
         self.laser=self.canevas.create_rectangle(self.xlaser+self.Larg+9.5, self.ylaser-self.Long, self.xlaser+9.5, self.ylaser, fill=self.couleur)
 
+        # pour faire une petit son lors du tir 
+        pygame.init() 
+        son=pygame.mixer.Sound("Tir.wav")
+        son.play()
+
         self.Tir()
     
 
@@ -269,7 +282,7 @@ class Laserrr:
             self.ylaser+=self.vitesse
             self.canevas.coords(self.laser, self.xlaser+self.Larg+9.5, self.ylaser-self.Long, self.xlaser+9.5,self.ylaser )
             self.couler()
-            self.fenetre.after(5,self.Tir)
+            self.fenetre.after(10,self.Tir)
         else:
             self.canevas.delete(self.laser)
               
@@ -311,7 +324,8 @@ class Laserrr:
 
 # declaration de nous 2 seules variables globales nous avons ete force de les utiliser,
 # car on les utilises dans plusieurs classes differentes, on a essayer sans ces variables mais le jeux ne tournais pas correctement,$
-# ou on devais faire des appel de foncitions avec parametre simplement pour passer ce paramettre a une sous fonction ex: Tir qui appelle couler         
+# ou on devais faire des appel de foncitions avec parametre simplement pour passer ce paramettre a une sous fonction ex: Tir qui appelle couler      
+  
 dicoAmis={}
 dicoEnnemis={}    
     

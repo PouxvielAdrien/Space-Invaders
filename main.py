@@ -31,7 +31,7 @@ def jeu():
     
 
     canvas=tkinter.Canvas(fenetre, width = longeur,height = largeur,bg = "#47484b")
-    images=tkinter.PhotoImage(file = "fond.gif" )
+    images=tkinter.PhotoImage(file = "fond.gif" )   
     canvas.create_image(0,0,anchor = 'nw' , image=images)
     canvas.grid(column=0, row=1, ipadx=5, pady=5)
 
